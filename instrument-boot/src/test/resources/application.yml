@@ -1,0 +1,35 @@
+ss-latency:
+  command:
+    highValue: 500
+    lowValue: 0
+    periodMs: 0
+    startTimeMs: 0
+    offPeriodMs: 0
+    percentErrors: 0.0
+
+pulse-latency:
+  command:
+    highValue: 500
+    lowValue: 500
+    periodMs: 10000
+    startTimeMs: 0
+    offPeriodMs: 5000
+    percentErrors: 0.0
+
+sine-latency:
+  command:
+    highValue: 500
+    lowValue: 500
+    periodMs: 10000
+    startTimeMs: 0
+    offPeriodMs: 0
+    percentErrors: 0.0
+
+ramp-latency:
+  command:
+    highValue: 500
+    lowValue: 500
+    periodMs: 10000
+    startTimeMs: 0
+    offPeriodMs: 0
+    percentErrors: 0.0

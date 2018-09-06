@@ -1,0 +1,49 @@
+buildscript {
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'maven-publish'
+
+dependencies {
+    compile project (':instrument')
+    compile('org.springframework.cloud:spring-cloud-starter-config')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+if (springBootVersion.startsWith("2.")) {
+    bootJar {
+        enabled = false
+    }
+}
+
+if (springBootVersion.startsWith("1.5.")) {
+    bootRepackage {
+        enabled = false
+    }
+}
+
+jar {
+    enabled = true
+}
+
+publishing {
+    publications {
+        impl(MavenPublication) {
+            groupId group
+            artifactId rootProject.name + "-boot"
+            version version
+
+            from components.java
+        }
+    }
+}

@@ -1,0 +1,18 @@
+apply plugin: 'maven-publish'
+
+dependencies {
+    compile("org.aspectj:aspectjweaver:$aspectJVersion")
+    testCompile("junit:junit:$junitVersion")
+}
+
+publishing {
+    publications {
+        impl(MavenPublication) {
+            groupId group
+            artifactId rootProject.name
+            version version
+
+            from components.java
+        }
+    }
+}

@@ -1,0 +1,10 @@
+management:
+  # Boot 2.x
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+  # Boot 1.x
+  security:
+    enabled: false

@@ -1,0 +1,6 @@
+rootProject.name = 'nf-instrument'
+
+include 'instrument'
+include 'instrument-boot'
+include 'demo-app'
+include 'demo-config-server'
