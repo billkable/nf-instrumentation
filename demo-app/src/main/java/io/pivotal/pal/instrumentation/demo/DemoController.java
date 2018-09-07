@@ -9,15 +9,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/hello")
 public class DemoController {
 
-    @InjectNfBehavior(cmdKey = "pulse-latency")
+    @InjectNfBehavior(pointCutName = "hello")
     @GetMapping
     public String hello() {
         return "Hello";
     }
 
 
-    @InjectNfBehavior(name = "static-pulse-latency",
-                                highValue = 1000L)
+    @InjectNfBehavior(pointCutName = "static-hello",
+                                highValue = 500L)
     @GetMapping("/static")
     public String staticHello() {
         return "Static Hello";

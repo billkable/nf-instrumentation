@@ -8,10 +8,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Import({BehaviorInstrumentConfig.class,
-        io.pivotal.pal.instrumentation.config.props.PulseLatencyProps.class,
-        io.pivotal.pal.instrumentation.config.props.PulseLatencyProps.class,
-        io.pivotal.pal.instrumentation.config.props.RampLatencyProps.class,
-        io.pivotal.pal.instrumentation.config.props.SineLatencyProps.class,
-        io.pivotal.pal.instrumentation.config.props.SteadyStateLatencyProps.class})
+        io.pivotal.pal.instrumentation.config.CommandPropsEnvironmentSource.class})
 public @interface EnableNfBehaviorInstrumentation {
 }

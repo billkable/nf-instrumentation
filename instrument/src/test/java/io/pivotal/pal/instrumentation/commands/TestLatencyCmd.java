@@ -1,7 +1,7 @@
 package io.pivotal.pal.instrumentation.commands;
 
 import io.pivotal.pal.instrumentation.algorithms.SteadyStateAlgorithm;
-import io.pivotal.pal.instrumentation.config.AlgorithmProps;
+import io.pivotal.pal.instrumentation.config.CommandProps;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -10,7 +10,9 @@ public class TestLatencyCmd {
     public void testLatencyCmd() {
         LatencyCmd cmd = new LatencyCmd(
                 new SteadyStateAlgorithm(
-                        new AlgorithmProps(
+                        new CommandProps(
+                                LatencyCmd.class,
+                                SteadyStateAlgorithm.class,
                                 100L,
                                 0L,
                                 0L,

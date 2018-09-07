@@ -1,35 +1,26 @@
-ss-latency:
-  command:
+logging:
+  level:
+    root: ERROR
+    io.pivotal: DEBUG
+
+configuredMethod:
+  nf-instrument:
+    cmdClass: io.pivotal.pal.instrumentation.commands.LatencyCmd
+    algorithmClass: io.pivotal.pal.instrumentation.algorithms.SteadyStateAlgorithm
+    highValue: 1000
+    lowValue: 50
+    startTimeMs: 0
+    periodMs: 0
+    offPeriodMs: 0
+    percentErrors: 0.0
+
+configuredPulseMethod:
+  nf-instrument:
+    cmdClass: io.pivotal.pal.instrumentation.commands.LatencyCmd
+    algorithmClass: io.pivotal.pal.instrumentation.algorithms.PulseAlgorithm
     highValue: 500
     lowValue: 0
-    periodMs: 0
     startTimeMs: 0
-    offPeriodMs: 0
-    percentErrors: 0.0
-
-pulse-latency:
-  command:
-    highValue: 500
-    lowValue: 500
-    periodMs: 10000
-    startTimeMs: 0
-    offPeriodMs: 5000
-    percentErrors: 0.0
-
-sine-latency:
-  command:
-    highValue: 500
-    lowValue: 500
-    periodMs: 10000
-    startTimeMs: 0
-    offPeriodMs: 0
-    percentErrors: 0.0
-
-ramp-latency:
-  command:
-    highValue: 500
-    lowValue: 500
-    periodMs: 10000
-    startTimeMs: 0
-    offPeriodMs: 0
+    periodMs: 2000
+    offPeriodMs: 1500
     percentErrors: 0.0

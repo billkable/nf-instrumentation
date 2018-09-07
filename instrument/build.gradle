@@ -2,6 +2,7 @@ apply plugin: 'maven-publish'
 
 dependencies {
     compile("org.aspectj:aspectjweaver:$aspectJVersion")
+    compile("org.slf4j:slf4j-api:$slf4jVersion")
     testCompile("junit:junit:$junitVersion")
 }
 

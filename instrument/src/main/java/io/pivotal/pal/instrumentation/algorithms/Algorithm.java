@@ -1,6 +1,6 @@
 package io.pivotal.pal.instrumentation.algorithms;
 
-import io.pivotal.pal.instrumentation.config.AlgorithmProps;
+import io.pivotal.pal.instrumentation.config.CommandProps;
 
 /**
  * Interface for defining time base algorithm of
@@ -9,5 +9,5 @@ import io.pivotal.pal.instrumentation.config.AlgorithmProps;
  */
 public interface Algorithm {
     double getValue();
-    AlgorithmProps getProps();
+    CommandProps getProps();
 }

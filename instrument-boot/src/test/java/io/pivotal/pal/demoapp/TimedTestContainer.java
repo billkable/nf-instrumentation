@@ -1,40 +1,33 @@
 package io.pivotal.pal.demoapp;
 
 import io.pivotal.pal.instrumentation.InjectNfBehavior;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 class TimedTestContainer {
+    private final Logger logger = LoggerFactory.getLogger(TimedTestContainer.class);
 
-    @InjectNfBehavior(cmdKey = "ss-latency")
-    void executeConfiguredSteadyStateLatency() {
-        // Do nothing - steady state latency will be injected
-    }
-
-    @InjectNfBehavior(name = "inlineMethod",
-                                highValue = 500L)
+    @InjectNfBehavior(pointCutName = "inlineMethod",
+                        highValue = 500L)
     void executeInlineInstrumentedSteadyStateLatency() {
-        // Do nothing - steady state latency will be injected
+        logger.debug("Executing inline method");
     }
 
-    @InjectNfBehavior(cmdKey = "pulse-latency")
+    @InjectNfBehavior(pointCutName = "configuredMethod")
+    void executeConfiguredSteadyStateLatency() {
+        logger.debug("Executing configured method");
+    }
+
+    @InjectNfBehavior(pointCutName = "configuredPulseMethod")
     void executeConfiguredPulseLatency() {
-        // Do nothing - steady state latency will be injected
+        logger.debug("Executing configured method");
     }
 
-    @InjectNfBehavior(cmdKey = "sine-latency")
-    void executeConfiguredSineLatency() {
-        // Do nothing - steady state latency will be injected
-    }
-
-    @InjectNfBehavior(cmdKey = "ramp-latency")
-    void executeConfiguredRampLatency() {
-        // Do nothing - steady state latency will be injected
-    }
-
-    @InjectNfBehavior(name = "errorMethod",
+    @InjectNfBehavior(pointCutName = "errorMethod",
                                 percentErrors = 1.0)
     void executeInstrumentedError() {
-        // Do nothing - steady state latency will be injected
+        logger.debug("Executing instrumented method");
     }
 }

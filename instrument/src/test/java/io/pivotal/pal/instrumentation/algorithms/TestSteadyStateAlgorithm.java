@@ -1,6 +1,7 @@
 package io.pivotal.pal.instrumentation.algorithms;
 
-import io.pivotal.pal.instrumentation.config.AlgorithmProps;
+import io.pivotal.pal.instrumentation.commands.LatencyCmd;
+import io.pivotal.pal.instrumentation.config.CommandProps;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -11,7 +12,9 @@ public class TestSteadyStateAlgorithm {
 
         SteadyStateAlgorithm algorithm
                 = new SteadyStateAlgorithm(
-                        new AlgorithmProps(
+                        new CommandProps(
+                                LatencyCmd.class,
+                                SteadyStateAlgorithm.class,
                                 1000L,
                                 0L,
                                 0L,

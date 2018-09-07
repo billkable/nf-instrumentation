@@ -1,6 +1,6 @@
 package io.pivotal.pal.instrumentation.algorithms;
 
-import io.pivotal.pal.instrumentation.config.AlgorithmProps;
+import io.pivotal.pal.instrumentation.config.CommandProps;
 
 /**
  * SineAlgorithm
@@ -10,7 +10,7 @@ import io.pivotal.pal.instrumentation.config.AlgorithmProps;
 public class SineAlgorithm
         extends AbstractAlgorithm {
 
-    public SineAlgorithm(AlgorithmProps props) {
+    public SineAlgorithm(CommandProps props) {
         super(props);
     }
 
@@ -21,11 +21,19 @@ public class SineAlgorithm
         long highValue = getProps().getHighValue();
         long lowValue = getProps().getLowValue();
         long timeStampMs = System.currentTimeMillis();
+        long offPeriod = getProps().getOffPeriodMs();
 
-        return (((Math.sin(Math.PI * 2 *
+        double sineValue = (((Math.sin(Math.PI * 2 *
                 ((double)(timeStampMs - startTime) % period/period)))
                 + 1) / 2
                 * (highValue - lowValue))
                 + lowValue;
+
+        if (
+                ((double)(timeStampMs - startTime)
+                        % period) <
+                        (period - offPeriod))
+            return sineValue;
+        else return lowValue;
     }
 }

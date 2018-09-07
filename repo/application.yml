@@ -1,14 +1,23 @@
-ss-latency:
-  command:
-    highValue: 50
+logging:
+  level:
+    root: ERROR
+    io.pivotal: DEBUG
+
+hello:
+  nf-instrument:
+    cmdClass: io.pivotal.pal.instrumentation.commands.LatencyCmd
+    algorithmClass: io.pivotal.pal.instrumentation.algorithms.SteadyStateAlgorithm
+    highValue: 500
     lowValue: 50
     periodMs: 0
     startTimeMs: 0
     offPeriodMs: 0
     percentErrors: 0.0
 
-pulse-latency:
-  command:
+potential-squarewave-pointcut:
+  nf-instrument:
+    cmdClass: io.pivotal.pal.instrumentation.commands.LatencyCmd
+    algorithmClass: io.pivotal.pal.instrumentation.algorithms.PulseAlgorithm
     highValue: 500
     lowValue: 50
     periodMs: 10000
@@ -16,8 +25,10 @@ pulse-latency:
     offPeriodMs: 5000
     percentErrors: 0.0
 
-sine-latency:
-  command:
+potential-ramp-pointcut:
+  nf-instrument:
+    cmdClass: io.pivotal.pal.instrumentation.commands.LatencyCmd
+    algorithmClass: io.pivotal.pal.instrumentation.algorithms.RampAlgorithm
     highValue: 500
     lowValue: 50
     periodMs: 10000
@@ -25,11 +36,37 @@ sine-latency:
     offPeriodMs: 0
     percentErrors: 0.0
 
-ramp-latency:
-  command:
+potential-sine-pointcut:
+  nf-instrument:
+    cmdClass: io.pivotal.pal.instrumentation.commands.LatencyCmd
+    algorithmClass: io.pivotal.pal.instrumentation.algorithms.SineAlgorithm
     highValue: 500
     lowValue: 50
     periodMs: 10000
     startTimeMs: 0
     offPeriodMs: 0
     percentErrors: 0.0
+
+potential-sine-pointcut-with-25-percent-errors:
+  nf-instrument:
+    cmdClass: io.pivotal.pal.instrumentation.commands.LatencyCmd
+    algorithmClass: io.pivotal.pal.instrumentation.algorithms.SineAlgorithm
+    highValue: 500
+    lowValue: 50
+    periodMs: 10000
+    startTimeMs: 0
+    offPeriodMs: 0
+    percentErrors: 0.25
+
+potential-ramp-pointcut-with-cutoff-75-percent-period:
+  nf-instrument:
+    cmdClass: io.pivotal.pal.instrumentation.commands.LatencyCmd
+    algorithmClass: io.pivotal.pal.instrumentation.algorithms.SineAlgorithm
+    highValue: 1000
+    lowValue: 50
+    periodMs: 10000
+    startTimeMs: 0
+    offPeriodMs: 2500
+    percentErrors: 0.25
+
+

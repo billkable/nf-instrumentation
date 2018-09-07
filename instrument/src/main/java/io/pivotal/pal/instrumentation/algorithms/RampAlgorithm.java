@@ -1,16 +1,16 @@
 package io.pivotal.pal.instrumentation.algorithms;
 
-import io.pivotal.pal.instrumentation.config.AlgorithmProps;
+import io.pivotal.pal.instrumentation.config.CommandProps;
 
 /**
- * SawtoothAlgorithm
+ * RampAlgorithm
  *
  * Basic temporal pattern modelling a Sawtooth
  */
-public class SawtoothAlgorithm
+public class RampAlgorithm
         extends AbstractAlgorithm {
 
-    public SawtoothAlgorithm(AlgorithmProps props) {
+    public RampAlgorithm(CommandProps props) {
         super(props);
     }
 
@@ -21,9 +21,18 @@ public class SawtoothAlgorithm
         long highValue = getProps().getHighValue();
         long lowValue = getProps().getLowValue();
         long timeStampMs = System.currentTimeMillis();
+        long offPeriod = getProps().getOffPeriodMs();
 
-        return ((((double)(timeStampMs - startTime) % period)
+        double rampValue =
+                ((((double)(timeStampMs - startTime) % period)
                     /period) * (highValue - lowValue)
                 ) + lowValue;
+
+        if (
+                ((double)(timeStampMs - startTime)
+                        % period) <
+                        (period - offPeriod))
+            return rampValue;
+        else return lowValue;
     }
 }

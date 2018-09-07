@@ -109,21 +109,23 @@ The core project provides the basic instrumentation logic.
     The aspect leverages the *injection annotation* as the pointcut.
 
 1.  The aspect executes the
-    [*command processor*](./instrument/src/main/java/io/pivotal/pal/instrumentation/config/factories/StaticCommandFactory.java).
-    If the
+    [*command processor*](./instrument/src/main/java/io/pivotal/pal/instrumentation/config/factories/CommandFactory.java).
+    The
     [*Injection Annotation*](./instrument/src/main/java/io/pivotal/pal/instrumentation/InjectNfBehavior.java)
-    is configured by `name()`, it will use the annotation's static
-    configuration.
-    If it is configured by `cmdKey()`, it will use a dynamic processor
-    that is defined externally by the runtime container.
+    must be configured with a `pointCutName()`.
+    The point cut name will be used to reference external configuration.
 
 1.  The
-    [*algorithm configuration*](./instrument/src/main/java/io/pivotal/pal/instrumentation/config/AlgorithmProps.java)
-    is a simple POJO that models algorithm parameters.
+    [*algorithm configuration*](./instrument/src/main/java/io/pivotal/pal/instrumentation/config/CommandProps.java)
+    is a simple POJO that models command and algorithm parameters.
 
 1.  The
     [*Injection Annotation*](./instrument/src/main/java/io/pivotal/pal/instrumentation/InjectNfBehavior.java)
-    sources static configuration if the `name()` property is set.
+    contains default configuration for the command and algorithm
+    properties.
+    Each may be overriden statically in the annotation, or dynamically
+    through external configuration.
+
 
 #### Spring boot extensions
 
@@ -133,14 +135,7 @@ in the following ways:
 1.  Imports the instrumentation libraries through the
     [`@EnableNfBehaviorInstrumentation` annotation](./instrument-boot/src/main/java/io/pivotal/pal/instrumentation/config/EnableNfBehaviorInstrumentation.java).
 
-1.  Autoconfigures a a default set of commands that may be configured
-    externally during runtime.
-
-1.  The default set of commands may be referenced by
-    [*Injection Annotation*](./instrument/src/main/java/io/pivotal/pal/instrumentation/InjectNfBehavior.java)
-    `cmdKey()` in the Spring Boot application.
-
-1.  Provides a dynamic command processor injected in the
+1.  Provides a dynamic command factory injected in the
     [Spring Boot configuration](./instrument-boot/src/main/java/io/pivotal/pal/instrumentation/config/BehaviorInstrumentConfig.java)
     `injectBehaviorAspect()`.
 
@@ -289,30 +284,26 @@ Annotate your `SpringBootApplication` class with
 Annotate your method to be injected with non-functional commands with
 [`@InjectNfBehavior`](./instrument/src/main/java/io/pivotal/pal/instrumentation/InjectNfBehavior.java)
 
-### Enable methods for static instrumentation
+### Enable methods for static or dynamic instrumentation
 
-Specify the
-[`@InjectNfBehavior`](./instrument/src/main/java/io/pivotal/pal/instrumentation/InjectNfBehavior.java)
-annotation `name()`.
+1.  Specify the
+    [`@InjectNfBehavior`](./instrument/src/main/java/io/pivotal/pal/instrumentation/InjectNfBehavior.java)
+    annotation `pointCutName()`.
+    It must be unique across the application.
 
-It must be unique across the application.
+1.  You may statically declare the command and algorithm parameters in
+    the annotation, if it better serves your use case.
 
-### Enable methods for dynamic instrumentation
+1.  Configure the [external configuration](./repo/application.yml).
+    If you configure both the static annotation configuration, the
+    external configuration wins.
 
-Specify the
-[`@InjectNfBehavior`](./instrument/src/main/java/io/pivotal/pal/instrumentation/InjectNfBehavior.java)
-annotation `cmdKey()` to one configured in the external dynamic
-configuration.
-
-See an [example here](./repo/application.yml).
+If you do not configure either statically in the annotation in external
+configuration, it will source the defaults from the annotation.
 
 ## Run it
 
 ## Commands, algorithms and rules
-
-The current solution takes the approach to balance need of dynamic
-algorithms, but also to keep the configuration manageable, and
-understandable.
 
 ### Cross-cutting configuration
 
@@ -333,9 +324,9 @@ pseudo-random algorithms.
 
 #### Temporal values
 
+- **Start Time** (Referenced from Unix Epoch in Milliseconds)
 - **Period** (Milliseconds)
 - **Off Period** (Milliseconds)
-- **Start Time** (Referenced from Unix Epoch in Milliseconds)
 
 These are required to set for temporal type algorithms.
 The *Off Period* value is used by pulse, notch or square algorithms to
@@ -365,6 +356,9 @@ The solution currently provides four types of temporal algorithms:
     following:
     - *Low Value* is set to the *High Value*
     - *Off Period* to zero.
+
+    The pulse rule is also imbedded within Ramp and Sine algorithms if
+    you want to combine them in a single configuration.
 
 1.  **Sine** - The algorithm returns a value ranging between configured
     *High Value* and *Low Value* according to Sine function applied to

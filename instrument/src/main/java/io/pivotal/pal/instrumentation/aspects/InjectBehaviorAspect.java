@@ -3,20 +3,22 @@ package io.pivotal.pal.instrumentation.aspects;
 import io.pivotal.pal.instrumentation.InjectNfBehavior;
 import io.pivotal.pal.instrumentation.commands.BehaviorCmd;
 import io.pivotal.pal.instrumentation.config.factories.CommandFactory;
-import io.pivotal.pal.instrumentation.config.factories.StaticCommandFactory;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Aspect
 public class InjectBehaviorAspect {
-    private final StaticCommandFactory commandFactory;
+    private final Logger logger
+            = LoggerFactory.getLogger(InjectBehaviorAspect.class);
 
-    public InjectBehaviorAspect(CommandFactory dynamicProcessor) {
-        this.commandFactory = new StaticCommandFactory(
-                dynamicProcessor
-        );
+    private CommandFactory commandFactory;
+
+    public InjectBehaviorAspect(CommandFactory commandFactory) {
+        this.commandFactory = commandFactory;
     }
 
     @Around("@annotation(io.pivotal.pal.instrumentation.InjectNfBehavior)")
@@ -30,6 +32,8 @@ public class InjectBehaviorAspect {
 
         BehaviorCmd cmd = this.commandFactory.getCommand(annotation);
 
+        logger.debug("processing non-functional behavior for {} ",
+                annotation.pointCutName());
         cmd.execute();
 
         return joinPoint.proceed();

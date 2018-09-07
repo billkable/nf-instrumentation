@@ -9,8 +9,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface InjectNfBehavior {
-    String cmdKey() default "";
-    String name() default "";
+    String pointCutName();
     Class cmdClass() default LatencyCmd.class;
     Class algorithmClass() default SteadyStateAlgorithm.class;
     long highValue() default 1000;

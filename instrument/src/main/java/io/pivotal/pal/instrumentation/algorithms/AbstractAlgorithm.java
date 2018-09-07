@@ -1,6 +1,6 @@
 package io.pivotal.pal.instrumentation.algorithms;
 
-import io.pivotal.pal.instrumentation.config.AlgorithmProps;
+import io.pivotal.pal.instrumentation.config.CommandProps;
 
 /**
  * AbstractAlgorithm
@@ -13,14 +13,14 @@ import io.pivotal.pal.instrumentation.config.AlgorithmProps;
 public abstract class AbstractAlgorithm
     implements Algorithm {
 
-    private final AlgorithmProps props;
+    private final CommandProps props;
 
-    AbstractAlgorithm(AlgorithmProps props) {
+    AbstractAlgorithm(CommandProps props) {
         props.validate();
         this.props = props;
     }
 
-    public AlgorithmProps getProps() {
+    public CommandProps getProps() {
         return this.props;
     }
 

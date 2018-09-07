@@ -1,7 +1,7 @@
 package io.pivotal.pal.instrumentation.algorithms;
 
-import io.pivotal.pal.instrumentation.algorithms.SineAlgorithm;
-import io.pivotal.pal.instrumentation.config.AlgorithmProps;
+import io.pivotal.pal.instrumentation.commands.LatencyCmd;
+import io.pivotal.pal.instrumentation.config.CommandProps;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -46,13 +46,15 @@ public class TestSineAlgorithm {
         long highValue = 1;
 
         SineAlgorithm algorithm = new SineAlgorithm(
-                new AlgorithmProps(
-                    highValue,
-                    lowValue,
-                    PERIOD,
-                    startTime,
-                    0L,
-                    0.0
+                new CommandProps(
+                        LatencyCmd.class,
+                        SineAlgorithm.class,
+                        highValue,
+                        lowValue,
+                        startTime,
+                        PERIOD,
+                        0L,
+                        0.0
                 )
         );
 

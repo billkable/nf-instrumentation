@@ -1,6 +1,6 @@
 package io.pivotal.pal.instrumentation.algorithms;
 
-import io.pivotal.pal.instrumentation.config.AlgorithmProps;
+import io.pivotal.pal.instrumentation.config.CommandProps;
 
 /**
  * SteadyStateAlgorithm
@@ -9,7 +9,7 @@ import io.pivotal.pal.instrumentation.config.AlgorithmProps;
  */
 public class SteadyStateAlgorithm extends AbstractAlgorithm {
 
-    public SteadyStateAlgorithm(AlgorithmProps props) {
+    public SteadyStateAlgorithm(CommandProps props) {
         super(props);
     }
 

@@ -1,8 +1,12 @@
 package io.pivotal.pal.instrumentation.commands;
 
 import io.pivotal.pal.instrumentation.algorithms.Algorithm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LatencyCmd extends AbstractBehaviorCmd {
+    private final Logger logger
+            = LoggerFactory.getLogger(LatencyCmd.class);
 
     public LatencyCmd(Algorithm algorithm) {
         super(algorithm);
@@ -21,6 +25,9 @@ public class LatencyCmd extends AbstractBehaviorCmd {
     }
 
     private long getLatency() {
-        return Math.round(getAlgorithm().getValue());
+        long latency = Math.round(getAlgorithm().getValue());
+
+        logger.info("generated latency {} ms", latency);
+        return latency;
     }
 }

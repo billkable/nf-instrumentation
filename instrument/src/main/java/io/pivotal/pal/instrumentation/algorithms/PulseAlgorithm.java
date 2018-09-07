@@ -1,7 +1,7 @@
 package io.pivotal.pal.instrumentation.algorithms;
 
 
-import io.pivotal.pal.instrumentation.config.AlgorithmProps;
+import io.pivotal.pal.instrumentation.config.CommandProps;
 
 /**
  * PulseAlgorithm
@@ -12,7 +12,7 @@ import io.pivotal.pal.instrumentation.config.AlgorithmProps;
  * rest of period is at high range value
  */
 public class PulseAlgorithm extends AbstractAlgorithm {
-    public PulseAlgorithm(AlgorithmProps props) {
+    public PulseAlgorithm(CommandProps props) {
         super(props);
     }
 

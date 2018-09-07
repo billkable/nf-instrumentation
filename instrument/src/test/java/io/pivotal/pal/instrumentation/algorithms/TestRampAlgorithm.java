@@ -1,11 +1,11 @@
 package io.pivotal.pal.instrumentation.algorithms;
 
-import io.pivotal.pal.instrumentation.algorithms.SawtoothAlgorithm;
-import io.pivotal.pal.instrumentation.config.AlgorithmProps;
+import io.pivotal.pal.instrumentation.commands.LatencyCmd;
+import io.pivotal.pal.instrumentation.config.CommandProps;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class TestSawtoothAlgorithm {
+public class TestRampAlgorithm {
     private static final long PERIOD = 10000;
 
     private static final double MIN_VALUE = 0;
@@ -56,14 +56,16 @@ public class TestSawtoothAlgorithm {
         long lowValue = 0;
         long highValue = 1;
 
-        SawtoothAlgorithm algorithm = new SawtoothAlgorithm(
-                new AlgorithmProps(
-                    highValue,
-                    lowValue,
-                    PERIOD,
-                    startTime,
-                    0L,
-                    0.0
+        RampAlgorithm algorithm = new RampAlgorithm(
+                new CommandProps(
+                        LatencyCmd.class,
+                        RampAlgorithm.class,
+                        highValue,
+                        lowValue,
+                        startTime,
+                        PERIOD,
+                        0L,
+                        0.0
                 )
         );
 
