@@ -1,7 +1,6 @@
 package io.pivotal.pal.instrumentation.config;
 
-import io.pivotal.pal.instrumentation.aspects.InjectBehaviorAspect;
-import io.pivotal.pal.instrumentation.config.factories.CommandFactory;
+import io.pivotal.pal.instrumentation.InjectBehaviorAspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.context.config.annotation.RefreshScope;

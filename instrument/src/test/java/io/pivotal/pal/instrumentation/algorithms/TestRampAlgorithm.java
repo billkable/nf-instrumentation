@@ -57,17 +57,16 @@ public class TestRampAlgorithm {
         long highValue = 1;
 
         RampAlgorithm algorithm = new RampAlgorithm(
-                new CommandProps(
-                        LatencyCmd.class,
-                        RampAlgorithm.class,
-                        highValue,
-                        lowValue,
-                        startTime,
-                        PERIOD,
-                        0L,
-                        0.0
-                )
-        );
+                CommandProps.of()
+                        .behavior(LatencyCmd.class,
+                                RampAlgorithm.class)
+                        .range(highValue,
+                                lowValue)
+                        .temporal(startTime,
+                                PERIOD,
+                                0L)
+                        .percentErrors(0.0)
+                        .build());
 
         Assert.assertEquals(expectedValue,
                 algorithm.getValue(),

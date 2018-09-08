@@ -1,6 +1,7 @@
 package io.pivotal.pal.instrumentation.algorithms;
 
 import io.pivotal.pal.instrumentation.commands.BehaviorCmd;
+import io.pivotal.pal.instrumentation.commands.LatencyCmd;
 import io.pivotal.pal.instrumentation.config.CommandProps;
 import org.junit.Assert;
 import org.junit.Test;
@@ -39,17 +40,16 @@ public class TestPulseAlgorithm {
         long highValue = 1;
 
         PulseAlgorithm algorithm = new PulseAlgorithm(
-                new CommandProps(
-                        BehaviorCmd.class,
-                        AbstractAlgorithm.class,
-                        highValue,
-                        lowValue,
-                        startTime,
-                        PERIOD,
-                        LATCH_OFF_PERIOD,
-                        0.0
-                )
-        );
+                CommandProps.of()
+                        .behavior(BehaviorCmd.class,
+                                PulseAlgorithm.class)
+                        .range(highValue,
+                                lowValue)
+                        .temporal(startTime,
+                                PERIOD,
+                                LATCH_OFF_PERIOD)
+                        .percentErrors(0.0)
+                        .build());
 
         Assert.assertEquals(expectedValue,
                 algorithm.getValue(),.001);

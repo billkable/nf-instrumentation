@@ -46,17 +46,16 @@ public class TestSineAlgorithm {
         long highValue = 1;
 
         SineAlgorithm algorithm = new SineAlgorithm(
-                new CommandProps(
-                        LatencyCmd.class,
-                        SineAlgorithm.class,
-                        highValue,
-                        lowValue,
-                        startTime,
-                        PERIOD,
-                        0L,
-                        0.0
-                )
-        );
+                CommandProps.of()
+                    .behavior(LatencyCmd.class,
+                            SineAlgorithm.class)
+                    .range(highValue,
+                            lowValue)
+                    .temporal(startTime,
+                            PERIOD,
+                            0L)
+                    .percentErrors(0.0)
+                    .build());
 
         Assert.assertEquals(expectedValue,
                 algorithm.getValue(),

@@ -6,8 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-class TimedTestContainer {
-    private final Logger logger = LoggerFactory.getLogger(TimedTestContainer.class);
+class InstrumentedTestContainer {
+    private final Logger logger = LoggerFactory.getLogger(InstrumentedTestContainer.class);
 
     @InjectNfBehavior(pointCutName = "inlineMethod",
                         highValue = 500L)

@@ -1,8 +1,7 @@
-package io.pivotal.pal.instrumentation.aspects;
+package io.pivotal.pal.instrumentation;
 
-import io.pivotal.pal.instrumentation.InjectNfBehavior;
 import io.pivotal.pal.instrumentation.commands.BehaviorCmd;
-import io.pivotal.pal.instrumentation.config.factories.CommandFactory;
+import io.pivotal.pal.instrumentation.config.CommandFactory;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;

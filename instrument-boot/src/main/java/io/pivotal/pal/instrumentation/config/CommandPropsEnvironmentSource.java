@@ -16,69 +16,47 @@ public class CommandPropsEnvironmentSource implements CommandPropsSource {
     }
 
     public CommandProps getProps(String pointCutName) {
-        String prefix = pointCutName + ".nf-instrument.";
 
-        Class cmdClass = null;
+        return CommandProps.of()
+                .behavior(getClassFromProps("cmdClass", pointCutName),
+                        getClassFromProps("algorithmClass", pointCutName))
+                .range(getPropertyForPointcut(pointCutName,
+                        "highValue",Long.class),
+                        getPropertyForPointcut(pointCutName,
+                                "lowValue",Long.class))
+                .temporal(getPropertyForPointcut(pointCutName,
+                        "startTimeMs",Long.class),
+                        getPropertyForPointcut(pointCutName,
+                                "periodMs",Long.class),
+                        getPropertyForPointcut(pointCutName,
+                                "offPeriodMs",Long.class))
+                .percentErrors(getPropertyForPointcut(pointCutName,
+                        "percentErrors",Double.class))
+                .buildRaw();
+    }
+
+    private Class getClassFromProps(String type, String pointCutName) {
+        Class clazz = null;
 
         try {
-            cmdClass = Class.forName(getPropertyForPrefix(prefix,
-                    "cmdClass",String.class));
+            clazz = Class.forName(getPropertyForPointcut(pointCutName,
+                    type,String.class));
 
         } catch (Exception e) {
             logger.warn("Cannot load the {}" +
                             ".cmdClass configuration." +
                             "Sourcing the command from the annotation" +
                             "configuration",
-                            pointCutName);
-        }
-
-        Class algorithmClass = null;
-
-        try {
-            algorithmClass = Class.forName(getPropertyForPrefix(prefix,
-                        "algorithmClass",String.class));
-
-        } catch (Exception e) {
-            logger.warn("Cannot load the {}" +
-                            ".algorithmClass configuration." +
-                            "Sourcing the command from the annotation" +
-                            "configuration",
                     pointCutName);
         }
 
-        // TODO algorithm props builder
-
-        CommandProps props = new CommandProps(
-                cmdClass,
-
-                algorithmClass,
-
-                getPropertyForPrefix(prefix,
-                "highValue",Long.class),
-
-                getPropertyForPrefix(prefix,
-                        "lowValue",Long.class),
-
-                getPropertyForPrefix(prefix,
-                        "startTimeMs",Long.class),
-
-                getPropertyForPrefix(prefix,
-                        "periodMs",Long.class),
-
-                getPropertyForPrefix(prefix,
-                        "offPeriodMs",Long.class),
-
-                getPropertyForPrefix(prefix,
-                        "percentErrors",Double.class)
-
-        );
-
-        return props;
+        return clazz;
     }
 
-    private <T> T getPropertyForPrefix(String prefix,
-                                        String propertyName,
-                                        Class<T> returnType) {
+    private <T> T getPropertyForPointcut(String pointCutName,
+                                         String propertyName,
+                                         Class<T> returnType) {
+        String prefix = pointCutName + ".nf-instrument.";
 
         String fqpn = prefix + propertyName;
 

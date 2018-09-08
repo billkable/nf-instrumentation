@@ -10,16 +10,10 @@ public class TestLatencyCmd {
     public void testLatencyCmd() {
         LatencyCmd cmd = new LatencyCmd(
                 new SteadyStateAlgorithm(
-                        new CommandProps(
-                                LatencyCmd.class,
-                                SteadyStateAlgorithm.class,
-                                100L,
-                                0L,
-                                0L,
-                                0L,
-                                0L,
-                                0.0
-                        )
+                        CommandProps.of()
+                                .defaultCommand()
+                                .range(100L,0L)
+                                .build()
                 )
         );
 

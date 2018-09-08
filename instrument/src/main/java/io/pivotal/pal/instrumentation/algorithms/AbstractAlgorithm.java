@@ -16,7 +16,6 @@ public abstract class AbstractAlgorithm
     private final CommandProps props;
 
     AbstractAlgorithm(CommandProps props) {
-        props.validate();
         this.props = props;
     }
 

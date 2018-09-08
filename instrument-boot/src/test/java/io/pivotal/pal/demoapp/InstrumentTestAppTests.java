@@ -8,11 +8,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = InstrumentBehaviorApp.class)
-public class InstrumentBehaviorAppTests {
+@SpringBootTest(classes = InstrumentTestApp.class)
+public class InstrumentTestAppTests {
 
     @Autowired
-    private TimedTestContainer container;
+    private InstrumentedTestContainer container;
 
     @Test
     public void testInstrumentedSteadyStateLatency() {
@@ -36,32 +36,6 @@ public class InstrumentBehaviorAppTests {
 
         Assert.assertEquals(1000.0, (double)executionTime,
                 50.0);
-    }
-
-    @Test
-    public void testConfiguredPulseLatency() {
-        long startTime = System.currentTimeMillis();
-        long totalRunTime;
-
-        // TODO tune the test for proper window and timing
-        container.executeConfiguredPulseLatency();
-        totalRunTime = System.currentTimeMillis() - startTime;
-
-        container.executeConfiguredPulseLatency();
-        totalRunTime += (System.currentTimeMillis() - startTime);
-
-        container.executeConfiguredPulseLatency();
-        totalRunTime += (System.currentTimeMillis() - startTime);
-
-        container.executeConfiguredPulseLatency();
-        totalRunTime += (System.currentTimeMillis() - startTime);
-
-        container.executeConfiguredPulseLatency();
-        totalRunTime += (System.currentTimeMillis() - startTime);
-
-
-//        Assert.assertEquals(1000, (double)totalRunTime,
-//                500);
     }
 
     @Test

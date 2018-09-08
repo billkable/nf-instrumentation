@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @EnableNfBehaviorInstrumentation
-public class InstrumentBehaviorApp {
+public class InstrumentTestApp {
     public static void main(String[] args) {
-        SpringApplication.run(InstrumentBehaviorApp.class, args);
+        SpringApplication.run(InstrumentTestApp.class, args);
     }
 }

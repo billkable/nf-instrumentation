@@ -1,96 +1,155 @@
 package io.pivotal.pal.instrumentation.config;
 
-
 import io.pivotal.pal.instrumentation.algorithms.Algorithm;
 import io.pivotal.pal.instrumentation.algorithms.SteadyStateAlgorithm;
 import io.pivotal.pal.instrumentation.commands.BehaviorCmd;
 import io.pivotal.pal.instrumentation.commands.LatencyCmd;
 
 public class CommandProps {
-    private final Class<BehaviorCmd> cmdClass;
-    private final Class<Algorithm> algorithmClass;
-    private final Long highValue;
-    private final Long lowValue;
-    private final Long startTimeMs;
-    private final Long periodMs;
-    private final Long offPeriodMs;
-    private final Double percentErrors;
+    private Class<BehaviorCmd> cmdClass;
+    private Class<Algorithm> algorithmClass;
+    private Long highValue;
+    private Long lowValue;
+    private Long startTimeMs;
+    private Long periodMs;
+    private Long offPeriodMs;
+    private Double percentErrors;
 
-    public CommandProps(CommandProps props) {
-        this.cmdClass = props.cmdClass;
-        this.algorithmClass = props.algorithmClass;
-        this.highValue = props.highValue;
-        this.lowValue = props.lowValue;
-        this.startTimeMs = props.startTimeMs;
-        this.periodMs = props.periodMs;
-        this.offPeriodMs = props.offPeriodMs;
-        this.percentErrors = props.percentErrors;
+    private CommandProps() {}
+
+    public static class Builder {
+        private CommandProps props = new CommandProps();
+
+        public Builder defaultCommand() {
+            behavior(LatencyCmd.class, SteadyStateAlgorithm.class);
+            range( 1000L, 0L);
+            temporal(0L,0L,0L);
+            percentErrors(0.0);
+
+            return this;
+        }
+
+        public Builder command(Class cmdClass) {
+            props.cmdClass = cmdClass;
+
+            return this;
+        }
+
+        public Builder algorithm(Class algorithmClass) {
+            props.algorithmClass = algorithmClass;
+
+            return this;
+        }
+
+        public Builder highValue(Long highValue) {
+            props.highValue = highValue;
+            return this;
+        }
+
+        public Builder lowValue(Long lowValue) {
+            props.lowValue = lowValue;
+            return this;
+        }
+
+        public Builder startTimeMs(Long startTimeMs) {
+            props.startTimeMs = startTimeMs;
+            return this;
+        }
+
+        public Builder periodMs(Long periodMs) {
+            props.periodMs = periodMs;
+            return this;
+        }
+
+        public Builder offPeriodMs(Long offPeriodMs) {
+            props.offPeriodMs = offPeriodMs;
+            return this;
+        }
+
+        public Builder percentErrors(Double percentErrors) {
+            props.percentErrors = percentErrors;
+            return this;
+        }
+
+        public Builder behavior(Class cmdClass,
+                                Class algorithmClass) {
+            command(cmdClass);
+            algorithm(algorithmClass);
+
+            return this;
+        }
+
+        public Builder range(Long highValue,
+                             Long lowValue) {
+
+            highValue(highValue);
+            lowValue(lowValue);
+            return this;
+        }
+
+        public Builder temporal(Long startTimeMs,
+                                Long periodMs,
+                                Long offPeriodMs) {
+
+            startTimeMs(startTimeMs);
+            periodMs(periodMs);
+            offPeriodMs(offPeriodMs);
+
+            return this;
+        }
+
+        public CommandProps buildRaw() {
+            return this.props;
+        }
+
+        public CommandProps build() {
+            props.validate();
+            return buildRaw();
+        }
     }
 
-    public static CommandProps getDefaultProps() {
-        return new CommandProps(
-            LatencyCmd.class,
-            SteadyStateAlgorithm.class,
-            1000L,
-            0L,
-            0L,
-            0L,
-            0L,
-            0.0
-        );
+    public static Builder of() {
+        return new Builder();
     }
 
     public static CommandProps override(CommandProps sourceProps,
                                         CommandProps targetProps) {
-        CommandProps newTarget = new CommandProps(
-            targetProps.cmdClass == null ?
-                    sourceProps.cmdClass : targetProps.cmdClass,
-            targetProps.algorithmClass == null ?
-                    sourceProps.algorithmClass : targetProps.algorithmClass,
-            targetProps.highValue == null ?
-                    sourceProps.highValue : targetProps.highValue,
-            targetProps.lowValue == null ?
-                    sourceProps.lowValue : targetProps.lowValue,
-            targetProps.startTimeMs == null ?
-                    sourceProps.startTimeMs : targetProps.startTimeMs,
-            targetProps.periodMs == null ?
-                    sourceProps.periodMs : targetProps.periodMs,
-            targetProps.offPeriodMs == null ?
-                    sourceProps.offPeriodMs : targetProps.offPeriodMs,
-            targetProps.percentErrors == null ?
-                    sourceProps.percentErrors : targetProps.percentErrors
-        );
-
-        return newTarget;
+        return of()
+                .behavior(targetProps.cmdClass == null ?
+                                sourceProps.cmdClass :
+                                targetProps.cmdClass,
+                        targetProps.algorithmClass == null ?
+                                sourceProps.algorithmClass :
+                                targetProps.algorithmClass)
+                .range(targetProps.highValue == null ?
+                                sourceProps.highValue :
+                                targetProps.highValue,
+                        targetProps.lowValue == null ?
+                                sourceProps.lowValue :
+                                targetProps.lowValue)
+                .temporal(targetProps.startTimeMs == null ?
+                                sourceProps.startTimeMs :
+                                targetProps.startTimeMs,
+                        targetProps.periodMs == null ?
+                                sourceProps.periodMs :
+                                targetProps.periodMs,
+                        targetProps.offPeriodMs == null ?
+                                sourceProps.offPeriodMs :
+                                targetProps.offPeriodMs)
+                .percentErrors(targetProps.percentErrors == null ?
+                                sourceProps.percentErrors :
+                                targetProps.percentErrors)
+                .build();
     }
-
-    public CommandProps(Class cmdClass,
-                        Class algorithmClass,
-                        Long highValue,
-                        Long lowValue,
-                        Long startTimeMs,
-                        Long periodMs,
-                        Long offPeriodMs,
-                        Double percentErrors) {
-
-        this.cmdClass = cmdClass;
-        this.algorithmClass = algorithmClass;
-        this.highValue = highValue;
-        this.lowValue = lowValue;
-        this.periodMs = periodMs;
-        this.startTimeMs = startTimeMs;
-        this.offPeriodMs = offPeriodMs;
-        this.percentErrors = percentErrors;
-    }
-
+    
     private void assertInvariants(  Class cmdClass,
                                     Class algorithmClass,
-                                    long highValue,
-                                    long lowValue,
-                                    long startTimeMs,
-                                    long periodMs,
-                                    long offPeriodMs,
-                                    double percentile) {
+                                    Long highValue,
+                                    Long lowValue,
+                                    Long startTimeMs,
+                                    Long periodMs,
+                                    Long offPeriodMs,
+                                    Double percentile) {
         assertClasses(cmdClass,algorithmClass);
 
         assertTemporalInvariants(periodMs,
@@ -114,18 +173,18 @@ public class CommandProps {
                     ("algorithmClass is not configured");
     }
 
-    private void assertTemporalInvariants(long periodMs,
-                                          long startTimeMs,
-                                          long offPeriodMs) {
-        if (periodMs < 0)
+    private void assertTemporalInvariants(Long periodMs,
+                                          Long startTimeMs,
+                                          Long offPeriodMs) {
+        if (null == periodMs || periodMs < 0)
             throw new IllegalArgumentException("periodMs must be " +
                     "greater than or equal to zero");
 
-        if (startTimeMs < 0)
+        if (null == startTimeMs || startTimeMs < 0)
             throw new IllegalArgumentException("startTimeMs must be " +
                     "greater than or equal to zero");
 
-        if (offPeriodMs < 0)
+        if (null == offPeriodMs || offPeriodMs < 0)
             throw new IllegalArgumentException("offPeriodMs must be " +
                     "equal to or greater than zero");
 
@@ -135,13 +194,13 @@ public class CommandProps {
         }
     }
 
-    private void assertRangeInvariants(long highValue,
-                                       long lowValue) {
-        if (highValue < 0)
+    private void assertRangeInvariants(Long highValue,
+                                       Long lowValue) {
+        if (null == highValue || highValue < 0)
             throw new IllegalArgumentException("highValue must be " +
                     "equal to or greater than zero");
 
-        if (lowValue < 0)
+        if (null == lowValue || lowValue < 0)
             throw new IllegalArgumentException("lowValue must be " +
                     "equal to or greater than zero");
 
@@ -150,8 +209,8 @@ public class CommandProps {
                     "greater than or the same as lowValue");
     }
 
-    private void assertPercentileInvariants(double percentile) {
-        if (percentile < 0 || percentile > 1.0)
+    private void assertPercentileInvariants(Double percentile) {
+        if (null == percentile || percentile < 0 || percentile > 1.0)
             throw new IllegalArgumentException("percentErrors must be " +
                     "between zero and one");
     }
@@ -188,7 +247,7 @@ public class CommandProps {
         return percentErrors;
     }
 
-    public void validate() {
+    private void validate() {
         assertInvariants(this.cmdClass,
                         this.algorithmClass,
                         this.highValue,

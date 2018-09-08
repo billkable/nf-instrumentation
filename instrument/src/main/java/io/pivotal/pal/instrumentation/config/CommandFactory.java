@@ -1,10 +1,8 @@
-package io.pivotal.pal.instrumentation.config.factories;
+package io.pivotal.pal.instrumentation.config;
 
 import io.pivotal.pal.instrumentation.InjectNfBehavior;
 import io.pivotal.pal.instrumentation.algorithms.Algorithm;
 import io.pivotal.pal.instrumentation.commands.BehaviorCmd;
-import io.pivotal.pal.instrumentation.config.CommandProps;
-import io.pivotal.pal.instrumentation.config.CommandPropsSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,16 +91,16 @@ public class CommandFactory {
 
     private CommandProps getAnnotationCommandProps(InjectNfBehavior annotation) {
 
-        return new CommandProps(
-            annotation.cmdClass(),
-            annotation.algorithmClass(),
-            annotation.highValue(),
-            annotation.lowValue(),
-            annotation.startTimeMs(),
-            annotation.periodMs(),
-            annotation.offPeriodMs(),
-            annotation.percentErrors()
-        );
+        return CommandProps.of()
+                .behavior(annotation.cmdClass(),
+                        annotation.algorithmClass())
+                .range(annotation.highValue(),
+                        annotation.lowValue())
+                .temporal(annotation.startTimeMs(),
+                        annotation.periodMs(),
+                        annotation.offPeriodMs())
+                .percentErrors(annotation.percentErrors())
+                .build();
 
     }
 }
