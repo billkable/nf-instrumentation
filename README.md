@@ -63,9 +63,11 @@ The project contains four modules to get you up and running:
 
 1.  `nf-instrument-boot` contains default Spring Boot configuration for
     the most common commands and associated algorithms.
+    It also includes a controller to override Spring environment
+    properties outside of config server.
 
 1.  `demo-config-server` is a simple local config server for testing out
-    the project.
+    the project for versioned configuration and/or dynamic refresh.
 
 1.  `demo-app` is a simple demo application of how to use the
     instrumentation annotations and associated

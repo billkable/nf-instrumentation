@@ -8,6 +8,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Import({BehaviorInstrumentConfig.class,
-        io.pivotal.pal.instrumentation.config.CommandPropsEnvironmentSource.class})
+        CommandPropsEnvironmentSource.class,
+        UpdateBehaviorCmdController.class})
 public @interface EnableNfBehaviorInstrumentation {
 }

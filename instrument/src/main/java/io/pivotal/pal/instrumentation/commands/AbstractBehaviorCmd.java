@@ -18,7 +18,7 @@ abstract class AbstractBehaviorCmd implements BehaviorCmd {
         this.random = new Random(1L);
     }
 
-    Algorithm getAlgorithm() {
+    public Algorithm getAlgorithm() {
         return algorithm;
     }
 

@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class CommandFactory {
     private final Logger logger = LoggerFactory.getLogger(CommandFactory.class);
-    private final Map<String, BehaviorCmd> cmdMap = new HashMap<>();
+    private final Map<String,BehaviorCmd> cacheManager = new HashMap<>();
     private final CommandPropsSource externalCommandPropsSource;
 
     public CommandFactory(CommandPropsSource externalCommandPropsSource) {
@@ -24,7 +24,7 @@ public class CommandFactory {
         InjectNfBehavior annotation =
                 (InjectNfBehavior)key;
 
-        BehaviorCmd cmd = cmdMap.get(annotation.pointCutName());
+        BehaviorCmd cmd = this.cacheManager.get(annotation.pointCutName());
 
         if (cmd == null) {
             logger.info("Command not found in cache for point cut {}",
@@ -39,7 +39,7 @@ public class CommandFactory {
 
             cmd = generateCommand(props);
 
-            cmdMap.put(annotation.pointCutName(), cmd);
+            cacheManager.put(annotation.pointCutName(), cmd);
 
             logger.info("Added command {} to cache for point cut {}",
                     cmd.getClass().getName(),
@@ -102,5 +102,14 @@ public class CommandFactory {
                 .percentErrors(annotation.percentErrors())
                 .build();
 
+    }
+
+    public void putCmd(String pointCutName, CommandProps props) {
+        this.cacheManager.put(pointCutName,
+                generateCommand(props));
+    }
+
+    public Map<String,BehaviorCmd> getCommands() {
+        return this.cacheManager;
     }
 }

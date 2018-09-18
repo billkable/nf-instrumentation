@@ -29,9 +29,20 @@ public class CommandProps {
             return this;
         }
 
+        public Builder command(String cmdClassName) {
+            props.cmdClass = getClassByName(cmdClassName);
+
+            return this;
+        }
+
         public Builder command(Class cmdClass) {
             props.cmdClass = cmdClass;
 
+            return this;
+        }
+
+        public Builder algorithm(String algorithClassName) {
+            props.algorithmClass = getClassByName(algorithClassName);
             return this;
         }
 
@@ -71,6 +82,13 @@ public class CommandProps {
             return this;
         }
 
+        public Builder behavior(String cmdClassName,
+                                String algorithmClass) {
+            command(cmdClassName);
+            algorithm(algorithmClass);
+
+            return this;
+        }
         public Builder behavior(Class cmdClass,
                                 Class algorithmClass) {
             command(cmdClass);
@@ -213,6 +231,16 @@ public class CommandProps {
         if (null == percentile || percentile < 0 || percentile > 1.0)
             throw new IllegalArgumentException("percentErrors must be " +
                     "between zero and one");
+    }
+
+    private static Class getClassByName(String className) {
+        try {
+            return Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException(
+                    className +
+                    " not found, check your configuration");
+        }
     }
 
     public Class<BehaviorCmd> getCmdClass() {
