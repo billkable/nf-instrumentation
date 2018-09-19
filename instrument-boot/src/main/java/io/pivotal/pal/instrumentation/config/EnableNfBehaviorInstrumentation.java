@@ -9,6 +9,6 @@ import java.lang.annotation.*;
 @Documented
 @Import({BehaviorInstrumentConfig.class,
         CommandPropsEnvironmentSource.class,
-        UpdateBehaviorCmdController.class})
+        BehaviorCmdEndpoint.class})
 public @interface EnableNfBehaviorInstrumentation {
 }

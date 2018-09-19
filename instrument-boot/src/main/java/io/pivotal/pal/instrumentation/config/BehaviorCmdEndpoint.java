@@ -1,44 +1,68 @@
 package io.pivotal.pal.instrumentation.config;
 
 import io.pivotal.pal.instrumentation.commands.BehaviorCmd;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
+import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
+import org.springframework.boot.actuate.endpoint.annotation.WriteOperation;
 
-import java.lang.annotation.Documented;
 import java.util.HashMap;
 import java.util.Map;
 
-@RestController
-@RequestMapping("/actuator")
-public class UpdateBehaviorCmdController {
+@Endpoint(id = "nf-instrument")
+public class BehaviorCmdEndpoint {
     private final CommandFactory commandFactory;
 
-    public UpdateBehaviorCmdController(CommandFactory commandFactory) {
+    public BehaviorCmdEndpoint(CommandFactory commandFactory) {
         this.commandFactory = commandFactory;
     }
 
-    @GetMapping("/nf-commands")
+    @ReadOperation
     public Map<String, CommandPropsDto> getCache() {
 
         Map<String, CommandPropsDto> dtoMap = new HashMap<>();
 
         for (Map.Entry<String, BehaviorCmd>entry:
-            commandFactory.getCommands().entrySet()) {
+                commandFactory.getCommands().entrySet()) {
             dtoMap.put(entry.getKey(),
                     CommandPropsDto.fromCmd(
+                            entry.getKey(),
                             entry.getValue()));
         }
 
         return dtoMap;
     }
 
-    @PostMapping("/nf-command/{pointCutName}")
-    public void putCommand(@PathVariable String pointCutName,
-                           @RequestBody CommandPropsDto propsDto) {
+    @WriteOperation
+    public void putCommand(String pointCutName,
+                           String cmdClass,
+                           String algorithmClass,
+                           Long highValue,
+                           Long lowValue,
+                           Long startTimeMs,
+                           Long periodMs,
+                           Long offPeriodMs,
+                           Double percentErrors
+    ) {
 
-        this.commandFactory.putCmd(pointCutName,propsDto.toProps());
+        CommandPropsDto propsDto =
+                new CommandPropsDto();
+
+        propsDto.pointCutName = pointCutName;
+        propsDto.cmdClass = cmdClass;
+        propsDto.algorithmClass = algorithmClass;
+        propsDto.highValue = highValue;
+        propsDto.lowValue = lowValue;
+        propsDto.startTimeMs = startTimeMs;
+        propsDto.periodMs = periodMs;
+        propsDto.offPeriodMs = offPeriodMs;
+        propsDto.percentErrors = percentErrors;
+
+        this.commandFactory.putCmd(propsDto.getPointCutName(),
+                propsDto.toProps());
     }
 
     public static class CommandPropsDto {
+        private String pointCutName;
         private String cmdClass;
         private String algorithmClass;
         private Long highValue;
@@ -51,6 +75,7 @@ public class UpdateBehaviorCmdController {
         public CommandPropsDto() {}
 
         public CommandPropsDto(
+                String pointCutName,
                 String cmdClass,
                 String algorithmClass,
                 Long highValue,
@@ -60,6 +85,7 @@ public class UpdateBehaviorCmdController {
                 Long offPeriodMs,
                 Double percentErrors
         ) {
+            this.pointCutName = pointCutName;
             this.cmdClass = cmdClass;
             this.algorithmClass = algorithmClass;
             this.highValue = highValue;
@@ -69,6 +95,15 @@ public class UpdateBehaviorCmdController {
             this.offPeriodMs = offPeriodMs;
             this.percentErrors = percentErrors;
         }
+
+        public String getPointCutName() {
+            return pointCutName;
+        }
+
+        public void setPointCutName(String pointCutName) {
+            this.pointCutName = pointCutName;
+        }
+
         public String getCmdClass() {
             return cmdClass;
         }
@@ -143,17 +178,33 @@ public class UpdateBehaviorCmdController {
                     .build();
         }
 
-        public static CommandPropsDto fromCmd(BehaviorCmd cmd) {
+        public static CommandPropsDto fromMap(Map map) {
             return new CommandPropsDto(
-                cmd.getClass().getName(),
-                cmd.getAlgorithm().getClass().getName(),
-                cmd.getAlgorithm().getProps().getHighValue(),
-                cmd.getAlgorithm().getProps().getLowValue(),
-                cmd.getAlgorithm().getProps().getStartTimeMs(),
-                cmd.getAlgorithm().getProps().getPeriodMs(),
-                cmd.getAlgorithm().getProps().getOffPeriodMs(),
-                cmd.getAlgorithm().getProps().getPercentErrors()
+                    (String)map.get("pointCutName"),
+                    (String)map.get("cmdClass"),
+                    (String)map.get("algorithmClass"),
+                    (Long)map.get("highValue"),
+                    (Long)map.get("lowValue"),
+                    (Long)map.get("startTimeMs"),
+                    (Long)map.get("periodMs"),
+                    (Long)map.get("offPeriodMs"),
+                    (Double)map.get("percentErrors"));
+        }
+
+        public static CommandPropsDto fromCmd(String pointCutName,
+                                                                          BehaviorCmd cmd) {
+            return new CommandPropsDto(
+                    pointCutName,
+                    cmd.getClass().getName(),
+                    cmd.getAlgorithm().getClass().getName(),
+                    cmd.getAlgorithm().getProps().getHighValue(),
+                    cmd.getAlgorithm().getProps().getLowValue(),
+                    cmd.getAlgorithm().getProps().getStartTimeMs(),
+                    cmd.getAlgorithm().getProps().getPeriodMs(),
+                    cmd.getAlgorithm().getProps().getOffPeriodMs(),
+                    cmd.getAlgorithm().getProps().getPercentErrors()
             );
         }
     }
+
 }
