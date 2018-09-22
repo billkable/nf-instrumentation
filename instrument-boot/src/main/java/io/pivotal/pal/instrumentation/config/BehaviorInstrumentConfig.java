@@ -6,9 +6,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@ComponentScan("io.pivotal.pal.instrumentation.config")
 public class BehaviorInstrumentConfig {
     private final Logger logger = LoggerFactory.getLogger(BehaviorInstrumentConfig.class);
     private final ApplicationContext ctx;

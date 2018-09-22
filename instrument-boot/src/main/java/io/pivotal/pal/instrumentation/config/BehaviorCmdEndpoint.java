@@ -1,23 +1,41 @@
 package io.pivotal.pal.instrumentation.config;
 
 import io.pivotal.pal.instrumentation.commands.BehaviorCmd;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.boot.actuate.endpoint.annotation.WriteOperation;
+import org.springframework.cloud.bus.ServiceMatcher;
+import org.springframework.cloud.bus.event.RemoteApplicationEvent;
+import org.springframework.cloud.bus.jackson.RemoteApplicationEventScan;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.event.EventListener;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Endpoint(id = "nf-instrument")
+@RemoteApplicationEventScan
 public class BehaviorCmdEndpoint {
+    private final Logger logger = LoggerFactory
+            .getLogger(BehaviorCmdEndpoint.class);
     private final CommandFactory commandFactory;
+    private final ServiceMatcher busServiceMatcher;
+    private final ApplicationEventPublisher publisher;
 
-    public BehaviorCmdEndpoint(CommandFactory commandFactory) {
+    public BehaviorCmdEndpoint(CommandFactory commandFactory,
+                               ServiceMatcher busServiceMatcher,
+                               ApplicationEventPublisher publisher) {
         this.commandFactory = commandFactory;
+        this.busServiceMatcher = busServiceMatcher;
+        this.publisher = publisher;
     }
 
     @ReadOperation
     public Map<String, CommandPropsDto> getCache() {
+        logger.debug("Getting BehaviorCmd cache");
 
         Map<String, CommandPropsDto> dtoMap = new HashMap<>();
 
@@ -57,8 +75,23 @@ public class BehaviorCmdEndpoint {
         propsDto.offPeriodMs = offPeriodMs;
         propsDto.percentErrors = percentErrors;
 
+        this.publisher.publishEvent(new BehaviorCmdChangeEvent(
+                        this, busServiceMatcher.getServiceId(),
+                                propsDto));
+    }
+
+    private void putCmdToCache(CommandPropsDto propsDto) {
+        logger.debug("Putting a BehaviorCmd into cache");
         this.commandFactory.putCmd(propsDto.getPointCutName(),
                 propsDto.toProps());
+    }
+
+    @EventListener
+    public void onBehaviorCmdChangeEvent(BehaviorCmdChangeEvent event) {
+
+        CommandPropsDto propsDto = event.getPropsDto();
+
+        putCmdToCache(propsDto);
     }
 
     public static class CommandPropsDto {
@@ -204,6 +237,28 @@ public class BehaviorCmdEndpoint {
                     cmd.getAlgorithm().getProps().getOffPeriodMs(),
                     cmd.getAlgorithm().getProps().getPercentErrors()
             );
+        }
+    }
+
+    public static class BehaviorCmdChangeEvent extends RemoteApplicationEvent {
+
+        private CommandPropsDto propsDto;
+
+        protected BehaviorCmdChangeEvent() {}
+
+        public BehaviorCmdChangeEvent(Object source,
+                                      String originService,
+                                      CommandPropsDto propsDto) {
+            super(source, originService);
+            this.propsDto = propsDto;
+        }
+
+        public CommandPropsDto getPropsDto() {
+            return propsDto;
+        }
+
+        public void setPropsDto(CommandPropsDto propsDto) {
+            this.propsDto = propsDto;
         }
     }
 
